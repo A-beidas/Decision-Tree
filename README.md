@@ -1,3 +1,4 @@
+<h3>About</h3>
 Machine Learning Project of implementing the ID3 algorithm from scratch. <br>
 This project was done in the context of a "Machine Learning" University Subject, Tested using the dataset mushroom.arff.<br>
 <h3>Splits the dataset into training set and test set, to give out as a result:</h3><br>
