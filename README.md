@@ -17,5 +17,4 @@ So far takes only nominal attributes.<br>
 <h4>
     Note** 
 </h4>
-<br>
 The algorithm simply ignores missing values
