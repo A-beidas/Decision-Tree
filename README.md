@@ -8,6 +8,7 @@ This project was done in the context of a "Machine Learning" University Subject,
 </ul>
 <h3>Execution</h3>
 <ul>
+    <li>Requires no external libraries, works on java 8</li>
     <li>For the mushroom dataset, preferred is using an information gain threshold of more than 0.9</li>
     <li>Training Size is the percentage of the dataset number of instances (although divided by 100; range between [0, 1])</li>
 </ul>
