@@ -1,12 +1,11 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
+import java.util.*;
+
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+
 
 public class Table {
 
@@ -16,6 +15,7 @@ public class Table {
 	private ArrayList<String[]> observations;
 	private Attribute.Node root;
 	private int trainingSize;
+	public static ArrayList<Integer> avoid_attributes;
 	public Table(String targetClass, float trainingSize, float threshold) {
 		Attribute.threshold = threshold;
 		Scanner in;
@@ -75,12 +75,30 @@ public class Table {
 			}
 			observations.add(temp);
 		}
+		ArrayList<Integer> avoid_attributes = new ArrayList<Integer>();
+		for(int i = 0; i < attributes.length; i++) {
+			LinkedHashMap<Character, Integer> frequencies = new LinkedHashMap<Character, Integer>();
+			for (int j = 0; j < observations.size(); j++) {
+				char attribute_value = observations.get(j)[i].charAt(0);
+				if (frequencies.get(attribute_value) == null) {
+					frequencies.put(attribute_value, 1);
+				} else {
+					frequencies.put(attribute_value, frequencies.get(attribute_value) + 1);
+				}
+			}
+			if (frequencies.get('?') != null && frequencies.get('?') > 0.2 * observations.size())
+				avoid_attributes.add(i);
+		}
+		if (!avoid_attributes.isEmpty())
+			this.avoid_attributes = avoid_attributes;
 	}
 
 	void method1() {
 		float maxGain = 0;
 		int maxIndex = 0;
 		for (int i = 0; i < attributes.length; i++) {
+			if (avoid_attributes.contains(i))
+				continue;
 			float thisIG = attributes[i].calculateInformationGain();
 			if (thisIG > maxGain) {
 				maxGain = thisIG;
@@ -98,7 +116,7 @@ public class Table {
 			current.data.split(current);
 		}
 	}
-	
+
 	protected float predict() {
 		int correct = 0, total = 0;
 		for (String[] strings : observations.subList(trainingSize, observations.size())) {
@@ -108,8 +126,8 @@ public class Table {
 		}
 		return ((float) (correct) / total) * 100;
 	}
-	
-	protected TreeView<String> toTree() { 
+
+	protected TreeView<String> toTree() {
 		TreeItem<String> root = new TreeItem<String>(this.root.toString());
 		TreeView<String> tree = new TreeView<String>(root);
 		treeBuild(root, this.root);
@@ -129,7 +147,7 @@ public class Table {
 			treeBuild(nextItem, variable.child);
 		}
 	}
-	
+
 	/**
 	 * ******************************** Inner class
 	 * @author Abeidas
@@ -159,7 +177,7 @@ public class Table {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "title=" + title + ", number ofinstances=" + observations.size();

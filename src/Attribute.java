@@ -21,7 +21,7 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 	/**
 	 * Takes the attribute line removing the prefix '@attribute ' and then processes
 	 * it
-	 * 
+	 *
 	 * @param line
 	 */
 	static Attribute instanceOf(String line, int index) {
@@ -52,7 +52,7 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 //		}
 //		return IG;
 //	}
-	
+
 	float calculateInformationGain() {
 		float totalCount = no + yes;
 		// First information is entropy feature
@@ -62,11 +62,11 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 			float variableTotalCount = value.class1 + value.class2;
 			float variableEntropy = (value.class1 != 0)
 					? (float) ((value.class1 / variableTotalCount) * (Math.log(variableTotalCount / value.class1))
-							/ Math.log(2))
+					/ Math.log(2))
 					: 0;
 			variableEntropy += (value.class2 != 0)
 					? (float) ((value.class2 / variableTotalCount) * (Math.log(variableTotalCount / value.class2))
-							/ Math.log(2))
+					/ Math.log(2))
 					: 0;
 			IG -= variableEntropy;
 		}
@@ -97,7 +97,7 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 	/**
 	 * *********************************************************************Inner
 	 * class 1
-	 * 
+	 *
 	 * @author Abeidas
 	 *
 	 */
@@ -122,7 +122,7 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 			float maxGain = 0;
 			int maxIndex = -1;
 			for (int i = 0; i < attributes.length; i++) {
-				if (attributesInBranch[i])
+				if (attributesInBranch[i] || Table.avoid_attributes.contains(i))
 					continue;
 				float thisIG = attributes[i].calculateInformationGain();
 				if (thisIG > maxGain) {
@@ -167,27 +167,27 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 		protected abstract boolean includes(String value);
 
 		public abstract String toString();
-		
+
 		protected class Node {
 
 			protected Attribute.Node child;
 			protected Variable variable;
 			protected int class1;
 			protected int class2;
-			
+
 			protected Node(Variable variable, int class1, int class2) {
 				this.variable = variable;
 				this.class1 = class1;
 				this.class2 = class2;
 			}
-			
+
 			@Override
 			public String toString() {
 				return Attribute.Variable.this.toString();
 			}
 		}
 	}
-	
+
 	protected static Boolean predictInstance(String[] line, Node root) {
 		Node current = root;
 		while (current != null) {
@@ -228,7 +228,7 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 			variables[i] = variable.new Node(variable, class1, class2);
 			variables[i++].child = child;
 		}
-		
+
 		protected Attribute.Variable.Node nodeIncludes(String value) {
 			for (int i = 0; i < this.i; i++) {
 				if (variables[i].variable.includes(value))
@@ -236,7 +236,7 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 			}
 			return null;
 		}
-		
+
 		@Override
 		public String toString() {
 			return data.name + " [" + class1 + "," + class2 + "]";
