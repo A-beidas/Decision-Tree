@@ -1,3 +1,5 @@
+package main.java;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
@@ -16,12 +18,12 @@ public class Table {
 	private Attribute.Node root;
 	private int trainingSize;
 	public static ArrayList<Integer> avoid_attributes;
-	public Table(String targetClass, float trainingSize, float threshold) {
+	public Table(String targetClass, float trainingSize, float threshold, File dataset) {
 		Attribute.threshold = threshold;
 		Scanner in;
 		try {
-			in = new Scanner(new File(ClassLoader.getSystemResource("mushroom.arff").toURI()));
-		} catch (FileNotFoundException | URISyntaxException e) {
+			in = new Scanner(dataset);
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return;
 		}
@@ -116,7 +118,7 @@ public class Table {
 			current.data.split(current);
 		}
 	}
-
+	
 	protected float predict() {
 		int correct = 0, total = 0;
 		for (String[] strings : observations.subList(trainingSize, observations.size())) {
@@ -126,8 +128,8 @@ public class Table {
 		}
 		return ((float) (correct) / total) * 100;
 	}
-
-	protected TreeView<String> toTree() {
+	
+	protected TreeView<String> toTree() { 
 		TreeItem<String> root = new TreeItem<String>(this.root.toString());
 		TreeView<String> tree = new TreeView<String>(root);
 		treeBuild(root, this.root);
@@ -147,7 +149,7 @@ public class Table {
 			treeBuild(nextItem, variable.child);
 		}
 	}
-
+	
 	/**
 	 * ******************************** Inner class
 	 * @author Abeidas
@@ -177,7 +179,7 @@ public class Table {
 		}
 		return null;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "title=" + title + ", number ofinstances=" + observations.size();

@@ -103,7 +103,7 @@
 % 
 % 6. Number of Attributes: 22 (all nominally valued)
 % 
-% 7. Attribute Information: (classes: edible=e, poisonous=p)
+% 7. main.java.Attribute Information: (classes: edible=e, poisonous=p)
 %      1. cap-shape:                bell=b,conical=c,convex=x,flat=f,
 %                                   knobbed=k,sunken=s
 %      2. cap-surface:              fibrous=f,grooves=g,scaly=y,smooth=s
@@ -139,7 +139,7 @@
 %     22. habitat:                  grasses=g,leaves=l,meadows=m,paths=p,
 %                                   urban=u,waste=w,woods=d
 % 
-% 8. Missing Attribute Values: 2480 of them (denoted by "?"), all for
+% 8. Missing main.java.Attribute Values: 2480 of them (denoted by "?"), all for
 %    attribute #11.
 % 
 % 9. Class Distribution: 
