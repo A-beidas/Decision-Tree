@@ -78,7 +78,7 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 	protected void split(Node current) {
 		yes = 0;
 		no = 0;
-		for (Attribute.Variable variable : this) {
+		for (Variable variable : this) {
 			variable.observations = new ArrayList<String[]>(variable.class1 + variable.class2);
 			variable.resetCounts();
 			for (String[] line : observations) {
@@ -137,9 +137,8 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 				return null;
 			}
 			Attribute att = attributes[maxIndex];
-			Attribute.Node next = new Attribute.Node(att, current);
+			Attribute.Node next = new Attribute.Node(att, current, this.observations);
 			current.addVariable(this, next, this.class1, this.class2);
-			next.data.observations = this.observations;
 			next.class1 = att.yes;
 			next.class2 = att.no;
 			return next;
@@ -185,7 +184,7 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 			
 			@Override
 			public String toString() {
-				return Attribute.Variable.this.toString();
+				return Variable.this.toString();
 			}
 		}
 	}
@@ -193,7 +192,7 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 	protected static Boolean predictInstance(String[] line, Node root) {
 		Node current = root;
 		while (current != null) {
-			Attribute.Variable.Node variable = current.nodeIncludes(line[current.data.index_in_table]);
+			Variable.Node variable = current.nodeIncludes(line[current.data.index_in_table]);
 			if (variable == null) {
 				String result = (current.class1 >= current.class2) ? targetClass.class1 : targetClass.class2;
 				return result.equals(line[targetClass.indexOfAttribute]);
@@ -216,22 +215,46 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 		Node parent;
 		Attribute data;
 		int i = 0;
-		Attribute.Variable.Node[] variables;
+		Variable.Node[] variables;
 		int class1;
 		int class2;
 
-		protected Node(Attribute attribute, Node parent) {
+		protected Node(Attribute attribute, Node parent, ArrayList<String[]> observations) {
 			this.parent = parent;
 			data = attribute;
-			variables = new Attribute.Variable.Node[data.size()];
+			variables = new Variable.Node[data.size()];
+			data.observations = observations;
 		}
 
-		private void addVariable(Variable variable, Attribute.Node child, int class1, int class2) {
+		protected Node(Attribute attribute, Node parent, String[][][] subsets, int k_fold, int exclude) {
+			if (k_fold == 1)
+				exclude = -1;
+			this.parent = parent;
+			data = attribute;
+			variables = new Variable.Node[data.size()];
+			data.observations = new ArrayList<String[]>();
+			for (int i = 0; i < k_fold; i ++ ) {
+				if (i == exclude)
+					continue;
+				for (int j = 0; j < subsets[i].length; j++) {
+					try {
+						data.observations.add(subsets[i][j]);
+					} catch (NullPointerException e) {
+						System.out.println(data.observations);
+						System.out.println(subsets[i]);
+						System.out.println(subsets[i][j]);
+						throw e;
+					}
+				}
+			}
+		}
+
+		private void addVariable(Variable variable, Node child, int class1, int class2) {
 			variables[i] = variable.new Node(variable, class1, class2);
 			variables[i++].child = child;
 		}
 		
-		protected Attribute.Variable.Node nodeIncludes(String value) {
+		protected Variable.Node nodeIncludes(String value) {
 			for (int i = 0; i < this.i; i++) {
 				if (variables[i].variable.includes(value))
 					return variables[i];

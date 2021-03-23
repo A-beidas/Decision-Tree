@@ -56,8 +56,8 @@ public class Main extends Application {
 		}
 		if (dataset == null)
 			return;
-		Table table = new Table("class", Float.parseFloat(trainingSize), Float.parseFloat(threshold), dataset);
+		Table table = new Table("class", Float.parseFloat(trainingSize), Float.parseFloat(threshold), dataset, 1);
 		pane.setCenter(table.toTree());
-		accuracy.setText(table.predict() + "%");
+		accuracy.setText(table.predict(1) + "%");
 	}
 }

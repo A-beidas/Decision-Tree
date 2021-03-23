@@ -33,7 +33,7 @@ public class AttributeCategorical extends Attribute {
 		return categories.size();
 	}
 	
-	private class CatVariable extends Attribute.Variable {
+	private class CatVariable extends Variable {
 		String name;
 		CatVariable(String name) {
 			this.name = name;

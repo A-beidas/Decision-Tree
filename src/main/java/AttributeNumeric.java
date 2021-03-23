@@ -33,7 +33,7 @@ public class AttributeNumeric extends Attribute {
 		}
 	}
 
-	private class Interval extends Attribute.Variable {
+	private class Interval extends Variable {
 		
 		float lowerBound;
 		float upperBound;
@@ -60,8 +60,8 @@ public class AttributeNumeric extends Attribute {
 	}
 	
 	@Override
-	public java.util.Iterator<Variable> iterator() {
-		java.util.Iterator<Variable> iterator = new Iterator<Attribute.Variable>() {
+	public Iterator<Variable> iterator() {
+		Iterator<Variable> iterator = new Iterator<Variable>() {
 			int i = 0;
 			@Override
 			public Variable next() {
