@@ -7,13 +7,17 @@ import java.util.Iterator;
 public class AttributeCategorical extends Attribute {
 
 	HashMap<String, Variable> categories;
+	HashMap<String, String> labels;
 
-	public AttributeCategorical(String name, int index, String cats) {
+	public AttributeCategorical(String name, int index, String cats, String attribute_information) {
 		super(name, index);
-		String[] temp = cats.replace("'", "").split("(, )|,");
+		String[] temp = cats.replaceAll("'| ", "").split(",");
+		String[] temp2 = attribute_information.split(":|,");
 		categories = new HashMap<String, Variable>(temp.length);
-		for (String categoryName : temp)
-			categories.put(categoryName.trim(), new CatVariable(categoryName.trim()));
+		for (int i = 0; i < temp.length; i++) {
+			String[] pair = temp2[i + 1].split("=");
+			categories.put(pair[1], new CatVariable(pair[1], pair[0]));
+		}
 	}
 
 	void addValue(String value, boolean isClass1) {
@@ -34,13 +38,16 @@ public class AttributeCategorical extends Attribute {
 	}
 	
 	private class CatVariable extends Variable {
+		// TODO This is actually the value (character)
 		String name;
-		CatVariable(String name) {
+		String label;
+		CatVariable(String name, String label) {
+			this.label = label;
 			this.name = name;
 		}
 		@Override
 		public String toString() {
-			return name;
+			return label;
 		}
 		@Override
 		protected boolean includes(String value) {

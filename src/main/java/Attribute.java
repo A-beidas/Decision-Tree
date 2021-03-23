@@ -2,6 +2,7 @@ package main.java;
 
 import java.util.ArrayList;
 import java.util.Queue;
+import main.java.Table.TargetClass;
 
 public abstract class Attribute implements Iterable<Attribute.Variable> {
 
@@ -11,7 +12,7 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 	protected int no;
 	protected static Queue<Node> queue;
 	protected static Attribute[] attributes;
-	protected static Table.TargetClass targetClass;
+	protected static TargetClass targetClass;
 	protected static float threshold;
 	protected ArrayList<String[]> observations;
 
@@ -26,10 +27,10 @@ public abstract class Attribute implements Iterable<Attribute.Variable> {
 	 * 
 	 * @param line
 	 */
-	static Attribute instanceOf(String line, int index) {
+	static Attribute instanceOf(String line, int index, String attribute_information) {
 		if (line.contains("{")) {
 			String[] temp = line.replace("}", "").split("\\{", 2);
-			return new AttributeCategorical(temp[0], index, temp[1]);
+			return new AttributeCategorical(temp[0], index, temp[1], attribute_information);
 		} else if (line.toLowerCase().contains("numeric"))
 			return new AttributeNumeric(line.split(" (?=[^\\s]+)")[0], index);
 		else

@@ -48,14 +48,15 @@ public class Table {
 		String attributesLine = line.substring(0, line.indexOf('\n'));
 		attributes = new Attribute[Integer.parseInt(attributesLine.split("Number of Attributes: ")[1].split(" ")[0])];
 		Attribute.attributes = attributes;
-		line = line.substring(line.indexOf("% 7. "));
+		line = line.substring(line.indexOf("% 7. ") + 5, line.indexOf("% 8. ")).replaceAll("%| |\n", "");
+		String[] attribute_information = line.split("\\d+.");
 		// TODO process attribute information
 		line = in.useDelimiter("\n@data").next();
 		String[] attributes_buffer = line.replace("^%.*\n", "").replace("@attribute ", "").split("\n");
 		int i, j = 0;
 		for (j = 0, i = 0; i < attributes_buffer.length; i++) {
 			if (!attributes_buffer[i].matches("(('" + targetClass + "')|(" + targetClass + ")) ?+.*"))
-				attributes[j++] = Attribute.instanceOf(attributes_buffer[i], i);
+				attributes[j++] = Attribute.instanceOf(attributes_buffer[i], i, attribute_information[i + 1]);
 			else if (!attributes_buffer[i].matches(".*\\{.*\\}"))
 				throw new IllegalArgumentException(attributes_buffer[i] + "Target Class must be categorical");
 			else
@@ -168,7 +169,7 @@ public class Table {
 		return ((float) (correct) / total) * 100;
 	}
 	
-	protected TreeView<String> toTree() { 
+	protected TreeView<String> toTree() {
 		TreeItem<String> root = new TreeItem<String>(this.root.toString());
 		TreeView<String> tree = new TreeView<String>(root);
 		treeBuild(root, this.root);
@@ -187,6 +188,10 @@ public class Table {
 			variableItem.getChildren().add(nextItem);
 			treeBuild(nextItem, variable.child);
 		}
+	}
+
+	void set_attribute_information(String[] attribute_information) {
+
 	}
 	
 	/**
